@@ -1,20 +1,97 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="container">
+  <h2>Basic CRUD Angular 5 POC</h2>
+  <div class="row">
+    <div class="col-xs-12">
+      <div>
+        <span class="">CRUD Manager</span>
+        <button type="button" class="btn custom-btn btn-primary pull-right" (click)="addNew()">
+          <span class="fa fa-plus">&nbsp;Add New</span>
+        </button>
+        <div class="form-inline">
+          Create company employees.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form class="form-inline table-top-form">
+        <div class="form-group">
+          <input type="text" class="form-control" id="exampleInputName2" placeholder="Search" (keyup)='updateFilter($event)'>
+        </div>
+        <div class="btn-group" dropdown>
+          <button id="button-basic" dropdownToggle type="button" class="btn btn-default dropdown-toggle"
+                  aria-controls="dropdown-basic">
+            Actions <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+            <li class="divider dropdown-divider"></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-12">
+      <ngx-datatable
+        #table
+        [rows]="employees"
+        [columns]="columns"
+        class="bootstrap"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [limit]="30"
+        [selectionType]="'checkbox'"
+        (select)='onSelect($event)'
+        [sorts]="[{prop: 'name', dir: 'asc'}]">
+        <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+          <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+            <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/>
+          </ng-template>
+          <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Name"></ngx-datatable-column>
+        <ngx-datatable-column name="Gender">
+          <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+            <span (click)="sort()">{{column.name}}</span>
+          </ng-template>
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Company"></ngx-datatable-column>
+        <ngx-datatable-column name="Edit" [width]="100" [resizeable]="false" [canAutoResize]="false" [draggable]="false">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <div class="btn-group" dropdown>
+              <button type="button" class="btn btn-default" (click)="openModalWithComponent(row)">Edit</button>
+              <button id="button-split" type="button" dropdownToggle class="btn btn-default dropdown-toggle dropdown-toggle-split"
+                      aria-controls="dropdown-split">
+                <span class="caret"></span>
+                <span class="sr-only">Split button!</span>
+              </button>
+              <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
+                  role="menu" aria-labelledby="button-split">
+                <li role="menuitem"><a class="dropdown-item" href="#">Copy</a></li>
+                <li class="divider dropdown-divider"></li>
+                <li role="menuitem"><a class="dropdown-item" href="#">Delete</a></li>
+              </ul>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
 
+</div>

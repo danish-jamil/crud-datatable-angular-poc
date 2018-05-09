@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal" #editEmployeeForm (ngSubmit)="saveEmployee()" novalidate>
+      <fieldset>
+      
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="name">Name</label>  
+        <div class="col-md-4">
+        <input id="name"name="name" type="text" placeholder="Enter Employee Name" class="form-control input-md" [(ngModel)]="employee.name">
+          
+        </div>
+      </div>
+      
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="age">Age</label>  
+        <div class="col-md-4">
+        <input id="age" name="age" type="text" placeholder="Enter Employee Age" class="form-control input-md" [(ngModel)]="employee.age">
+          
+        </div>
+      </div>
+      
+      <!-- Select Basic -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="gender">Gender</label>
+        <div class="col-md-4">
+          <select id="gender" name="gender" class="form-control" [(ngModel)]="employee.gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="company">Company</label>  
+        <div class="col-md-4">
+        <input id="company" name="company" type="text" placeholder="Enter Company" class="form-control input-md" [(ngModel)]="employee.company">
+          
+        </div>
+      </div>
+      
+      </fieldset>
+    </form>
+      
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+    <button type="button" class="btn btn-primary" (click)="bsModalRef.hide()">{{saveBtnName}}</button>
+  </div>
