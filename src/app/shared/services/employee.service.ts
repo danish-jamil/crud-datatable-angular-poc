@@ -14,7 +14,7 @@ const httpOptions = {
 @Injectable()
 export class EmployeeService {
 
-  private apiUrl = 'http://localhost:4200/assets/data/company.json';  // URL to web api
+  private apiUrl = 'assets/data/company.json';  // URL to web api
 
   constructor(
     private http: HttpClient) { }
