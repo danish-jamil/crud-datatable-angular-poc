@@ -14,7 +14,7 @@ const httpOptions = {
 @Injectable()
 export class EmployeeService {
 
-  private apiUrl = 'assets/data/company.json';  // URL to web api
+  private apiUrl = 'api/employees';  // URL to web api
 
   constructor(
     private http: HttpClient) { }
@@ -67,10 +67,11 @@ export class EmployeeService {
 
   /** POST: add a new Employee to the server */
   addEmployee (employee: Employee): Observable<Employee> {
-    return this.http.post<Employee>(this.apiUrl, employee, httpOptions).pipe(
-      tap((employee: Employee) => console.log(`added Employee w/ id=${employee.id}`)),
-      catchError(this.handleError<Employee>('addEmployee'))
-    );
+    return this.http.post<Employee>(this.apiUrl, employee, httpOptions)
+      .pipe(
+        tap((employee: Employee) => console.log(`added Employee w/ id=${employee.id}`)),
+        catchError(this.handleError<Employee>('addEmployee'))
+      );
   }
 
   /** DELETE: delete the Employee from the server */
@@ -78,18 +79,20 @@ export class EmployeeService {
     const id = typeof employee === 'number' ? employee : employee.id;
     const url = `${this.apiUrl}/${id}`;
 
-    return this.http.delete<Employee>(url, httpOptions).pipe(
-      tap(_ => console.log(`deleted Employee id=${id}`)),
-      catchError(this.handleError<Employee>('deleteEmployee'))
-    );
+    return this.http.delete<Employee>(url, httpOptions)
+      .pipe(
+        tap(_ => console.log(`deleted Employee id=${id}`)),
+        catchError(this.handleError<Employee>('deleteEmployee'))
+      );
   }
 
   /** PUT: update the Employee on the server */
   updateEmployee (employee: Employee): Observable<any> {
-    return this.http.put(this.apiUrl, employee, httpOptions).pipe(
-      tap(_ => console.log(`updated Employee id=${employee.id}`)),
-      catchError(this.handleError<any>('updateEmployee'))
-    );
+    return this.http.put(this.apiUrl, employee, httpOptions)
+      .pipe(
+        tap(_ => console.log(`updated Employee id=${employee.id}`)),
+        catchError(this.handleError<any>('updateEmployee'))
+      );
   }
 
   /**

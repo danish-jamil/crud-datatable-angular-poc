@@ -27,12 +27,8 @@
           </button>
           <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
               role="menu" aria-labelledby="button-basic">
-            <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-            <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
-            <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
-            <li class="divider dropdown-divider"></li>
-            <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
-            </li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Delete Selected</a></li>
+            
           </ul>
         </div>
       </form>
@@ -53,7 +49,8 @@
         [limit]="30"
         [selectionType]="'checkbox'"
         (select)='onSelect($event)'
-        [sorts]="[{prop: 'name', dir: 'asc'}]">
+        [sorts]="[{prop: 'id', dir: 'desc'}]">
+        
         <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
           <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
             <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/>
@@ -62,6 +59,7 @@
             <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/>
           </ng-template>
         </ngx-datatable-column>
+        <ngx-datatable-column name="id" [width]="100" [resizeable]="false" [canAutoResize]="false" [draggable]="false"></ngx-datatable-column>
         <ngx-datatable-column name="Name"></ngx-datatable-column>
         <ngx-datatable-column name="Gender">
           <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
@@ -83,9 +81,9 @@
               </button>
               <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
                   role="menu" aria-labelledby="button-split">
-                <li role="menuitem"><a class="dropdown-item" href="#">Copy</a></li>
+                <li role="menuitem"><a class="dropdown-item" href="#" (click)="openModalForCopying(row)">Copy</a></li>
                 <li class="divider dropdown-divider"></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">Delete</a></li>
+                <li role="menuitem"><a class="dropdown-item" href="#" (click)="deleteRecord(row)">Delete</a></li>
               </ul>
             </div>
           </ng-template>

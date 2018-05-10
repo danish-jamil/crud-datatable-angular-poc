@@ -5,7 +5,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
 import { EmployeeService } from './shared/services/employee.service';
 import { Observable } from 'rxjs/Rx';
-import { Employee } from './shared/models/employee';
+import { Employee, Action } from './shared/models/employee';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   temp = [];
 
   columns = [
+    { name: 'id' },
     { prop: 'name' },
     { name: 'Company' },
     { name: 'Gender' },
@@ -67,19 +68,58 @@ export class AppComponent implements OnInit, OnDestroy {
 
   addNew(){
     const initialState = {
-      class: 'md-modal'
+      action: Action.New,
+      employee: this.employees[this.employees.length - 1]
     };
     this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
+    this.bsModalRef.content.onClose.subscribe((res) => {
+      this.employees.unshift(res);
+      this.employees = [...this.employees];
+      console.log(this.employees);
+      this.table.offset = 0;
+    });
   }
 
   openModalWithComponent(employee: Employee) {
     const initialState = {
       title: `Edit Employee ${employee.name}`,
-      // employee: employee,
-      class: 'md-modal'
+      employee: employee,
+      action: Action.Update
     };
     this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
     this.bsModalRef.content.closeBtnName = 'Close';
-    this.bsModalRef.content.employee = employee;
+    this.bsModalRef.content.onClose.subscribe((employee: Employee) => {
+      let itemIndex = this.employees.findIndex(emp => emp.id == employee.id);
+      this.employees[itemIndex] = employee;
+      this.employees = [...this.employees];
+      console.log(this.employees);
+      this.table.offset = 0;
+    });
+    // this.bsModalRef.content.employee = employee;
+  }
+
+  openModalForCopying(employee: Employee){
+    const initialState = {
+      title: `Copy Employee ${employee.name}`,
+      employee: employee,
+      lastId: this.employees[this.employees.length - 1].id,
+      action: Action.Copy
+    };
+    this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
+    this.bsModalRef.content.closeBtnName = 'Close';
+    this.bsModalRef.content.onClose.subscribe((res) => {
+      this.employees.unshift(res);
+      this.employees = [...this.employees];
+      console.log(this.employees);
+      this.table.offset = 0;
+    });
+  }
+
+  deleteRecord(employee: Employee){
+    this.employeeService.deleteEmployee(employee).subscribe((res) => {
+      console.log(res);
+      this.employees = this.employees.filter(item => item !== employee);
+      this.employees = [...this.employees];
+    })
   }
 }
