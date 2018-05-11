@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Employee, Action } from '../shared/models/employee';
 import { EmployeeService } from '../shared/services/employee.service';
 import { Subject } from 'rxjs';
@@ -14,7 +14,6 @@ export class SimpleModalContentComponent implements OnInit {
   
   @Input() employee: Employee = new Employee();
   public lastId: number = 0;
-  public onClose: Subject<Employee>;
 
   employeeForm: FormGroup;
   
@@ -25,7 +24,8 @@ export class SimpleModalContentComponent implements OnInit {
   loading: boolean = false;
 
   constructor(
-    public bsModalRef: BsModalRef, 
+    public bsModalRef: BsModalRef,
+    public bsModalService: BsModalService,
     private employeeService: EmployeeService,
     private formBuilder: FormBuilder
   ) {
@@ -40,7 +40,7 @@ export class SimpleModalContentComponent implements OnInit {
  
   ngOnInit() { 
     console.log(this.employee);
-    this.onClose = new Subject();
+    console.log(this.lastId);
     if(this.action == Action.Update || this.action == Action.Copy){
       this.employeeForm.setValue({
         id: this.employee.id,
@@ -54,16 +54,15 @@ export class SimpleModalContentComponent implements OnInit {
   }
 
   saveEmployee(employee: Employee, isValid: boolean){
-    console.log('submitted');
     this.loading = true;
     if(isValid){
       switch (this.action) {
         case Action.New:
-          employee.id = this.employee.id + 1;
+          this.employee.id = employee.id = this.lastId + 1;
           this.employeeService.addEmployee(employee)
             .subscribe(
               (res) => {
-                this.onClose.next(employee);
+                this.bsModalService.onHide.next(employee);
                 this.loading = false;
                 this.bsModalRef.hide();
                 console.log('New record created');
@@ -74,9 +73,10 @@ export class SimpleModalContentComponent implements OnInit {
           this.employeeService.updateEmployee(employee)
             .subscribe(
               (res) => {
-                this.onClose.next(employee);
+                this.bsModalService.onHide.next(employee);
                 this.loading = false;
                 this.bsModalRef.hide();
+                
                 console.log('record updated');
               }
             );
@@ -88,13 +88,12 @@ export class SimpleModalContentComponent implements OnInit {
           this.employeeService.addEmployee(employee)
             .subscribe(
               (res) => {
-                this.onClose.next(employee);
+                this.bsModalService.onHide.next(employee);
                 this.loading = false;
                 this.bsModalRef.hide();
                 console.log('New record created');
               }
             );
-          console.log('Record copied');
           break;
         
         default:

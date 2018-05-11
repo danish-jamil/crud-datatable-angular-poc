@@ -4,10 +4,10 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
 import { EmployeeService } from './shared/services/employee.service';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subscription } from 'rxjs/Rx';
 import { Employee, Action } from './shared/models/employee';
 import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -15,14 +15,18 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  
+  // Table reference
   @ViewChild(DatatableComponent) table: DatatableComponent;
   title = 'app';
+  // Employees list: table rows
   employees: Employee[];
   bsModalRef: BsModalRef;
+  // temp employees list
   temp = [];
   loading: boolean = false;
-
+  // We will push all modal subscriptions in this list and unsubsribe them on destroy
+  modalSubscriptions: Subscription[] = [];
+  // Columns for table component
   columns = [
     { name: 'id' },
     { prop: 'name' },
@@ -30,7 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { name: 'Gender' },
     { name: 'Edit'}
   ];
-
+  
   constructor(
     private modalService: BsModalService, 
     private employeeService: EmployeeService, 
@@ -39,16 +43,22 @@ export class AppComponent implements OnInit, OnDestroy {
   
   ngOnInit(){
     this.loading = true;
+    // Fetch employees from API on component init
     this.employeeService.getEmployees()
       .subscribe(employees => {
         this.employees = employees;
+        // Add employees to temp array for search filtering
         this.temp = [...employees];
         this.loading = false;
       });
   }
 
   ngOnDestroy(){
-    //TODO: Unsubscribe any subscriptions
+    //Unsubscribe any subscriptions
+    this.modalSubscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+    this.modalSubscriptions = [];
   }
 
   updateFilter(event) {
@@ -70,20 +80,30 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   addNew(){
+    console.log(this.employees);
+    // Set the initial state of the modal
+    // Modal actions are performed based on action and lastId is only for mock api
     const initialState = {
       action: Action.New,
-      employee: this.employees[this.employees.length - 1]
+      lastId: this.employees[this.employees.length - 1].id // Last employee ID
     };
+    // Create reference to Modal
     this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
-    this.bsModalRef.content.onClose.subscribe((res) => {
-      this.employees.unshift(res);
-      this.employees = [...this.employees];
-      console.log(this.employees);
-      this.table.offset = 0;
-    });
+    // Subscribe to onHide observable of Modal service
+    this.modalSubscriptions.push(
+      this.modalService.onHide.pipe(take(1)).subscribe((employee) => {
+        if(employee){
+          // Push new employee on top of array
+          this.employees.push(employee);
+          this.employees = [...this.employees];
+          console.log(this.employees);
+          this.table.offset = 0;
+        }
+      })
+    );
   }
 
-  openModalWithComponent(employee: Employee) {
+  openModalForUpdating(employee: Employee) {
     const initialState = {
       title: `Edit Employee ${employee.name}`,
       employee: employee,
@@ -91,13 +111,17 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
     this.bsModalRef.content.closeBtnName = 'Close';
-    this.bsModalRef.content.onClose.subscribe((employee: Employee) => {
-      let itemIndex = this.employees.findIndex(emp => emp.id == employee.id);
-      this.employees[itemIndex] = employee;
-      this.employees = [...this.employees];
-      console.log(this.employees);
-      this.table.offset = 0;
-    });
+    this.modalSubscriptions.push(
+      this.modalService.onHide.pipe(take(1)).subscribe((employee) => {
+        if(employee){
+          let itemIndex = this.employees.findIndex(emp => emp.id == employee.id);
+          this.employees[itemIndex] = employee;
+          this.employees = [...this.employees];
+          console.log(this.employees);
+          this.table.offset = 0;
+        }
+      })
+    );
     // this.bsModalRef.content.employee = employee;
   }
 
@@ -105,25 +129,29 @@ export class AppComponent implements OnInit, OnDestroy {
     const initialState = {
       title: `Copy Employee ${employee.name}`,
       employee: employee,
-      lastId: this.employees[this.employees.length - 1].id,
       action: Action.Copy
     };
     this.bsModalRef = this.modalService.show(SimpleModalContentComponent, {initialState});
     this.bsModalRef.content.closeBtnName = 'Close';
-    this.bsModalRef.content.onClose.subscribe((res) => {
-      this.employees.unshift(res);
-      this.employees = [...this.employees];
-      console.log(this.employees);
-      this.table.offset = 0;
-    });
+    this.bsModalRef.content.lastId = this.employees[this.employees.length - 1].id,
+    this.modalSubscriptions.push(
+      this.modalService.onHide.pipe(take(1)).subscribe((employee) => {
+        if(employee){
+          this.employees.push(employee);
+          this.employees = [...this.employees];
+          console.log(this.employees);
+          this.table.offset = 0;
+        }
+      })
+    );
   }
 
   deleteRecord(employee: Employee){
     this.loading = true;
     this.employeeService.deleteEmployee(employee).subscribe((res) => {
       console.log(res);
-      this.employees = this.employees.filter(item => item !== employee);
-      this.employees = [...this.employees];
+      this.employees = [...this.employees.filter(item => item !== employee)];
+      // this.employees = [...this.employees];
       this.loading = false;
     })
   }
