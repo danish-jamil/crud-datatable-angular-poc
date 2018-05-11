@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
 import { EmployeeService } from './shared/services/employee.service';
 import { InMemoryDataService }  from './in-memory-data-service';
+import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
 
 
 @NgModule({
@@ -36,7 +37,13 @@ import { InMemoryDataService }  from './in-memory-data-service';
       InMemoryDataService, { delay: 1500 }
     )
   ],
-  providers: [EmployeeService],
+  providers: [
+    EmployeeService, {
+      provide: HTTP_INTERCEPTORS, 
+      useClass: AuthInterceptor, 
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleModalContentComponent]
 })
