@@ -21,6 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
   employees: Employee[];
   bsModalRef: BsModalRef;
   temp = [];
+  loading: boolean = false;
 
   columns = [
     { name: 'id' },
@@ -37,10 +38,12 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
   
   ngOnInit(){
+    this.loading = true;
     this.employeeService.getEmployees()
       .subscribe(employees => {
         this.employees = employees;
         this.temp = [...employees];
+        this.loading = false;
       });
   }
 
@@ -116,10 +119,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   deleteRecord(employee: Employee){
+    this.loading = true;
     this.employeeService.deleteEmployee(employee).subscribe((res) => {
       console.log(res);
       this.employees = this.employees.filter(item => item !== employee);
       this.employees = [...this.employees];
+      this.loading = false;
     })
   }
 }

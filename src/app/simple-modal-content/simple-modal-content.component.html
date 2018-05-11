@@ -1,3 +1,4 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <form class="form-horizontal" [formGroup]="employeeForm" (ngSubmit)="saveEmployee(employeeForm.value, employeeForm.valid)" novalidate>
   <div class="modal-header">
     <h4 class="modal-title pull-left">{{title}}</h4>

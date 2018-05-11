@@ -12,7 +12,7 @@ export class Employee {
     this.company = '';
   }
 }
-
+//Action types for BS Modal and Employee
 export enum Action{
   New, Copy, Update
 }

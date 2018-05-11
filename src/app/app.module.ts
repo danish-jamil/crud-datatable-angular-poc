@@ -7,6 +7,7 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { LoadingModule } from 'ngx-loading';
 
 import { AppComponent } from './app.component';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
@@ -27,6 +28,7 @@ import { InMemoryDataService }  from './in-memory-data-service';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    LoadingModule,
     // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
     // and returns simulated server responses.
     // Remove it when a real server is ready to receive requests.
