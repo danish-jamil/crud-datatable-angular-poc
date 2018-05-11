@@ -6,6 +6,12 @@
 
 @import 'assets/custom-styles/checkbox';
 
+.btn{
+  &.custom-btn{
+    margin-bottom: 10px;
+  }
+}
+
 .ngx-datatable{
   &.bootstrap{
     border: 1px solid #dadada;
@@ -21,11 +27,12 @@
   }
   .datatable-body{
     .datatable-body-row{
+      &.active{
+        background-color: #FFFFFF !important;
+        color: #000 !important;
+      }
       &.datatable-row-even{
         background-color: transparent !important;
-        &.active{
-          background-color: #1483ff !important;
-        }
       }
       .datatable-body-cell{
         overflow: inherit;
