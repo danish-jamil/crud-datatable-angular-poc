@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Employee, Action } from '../shared/models/employee';
 import { EmployeeService } from '../shared/services/employee.service';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-simple-modal-content',
