@@ -11,17 +11,15 @@ import { Subject } from 'rxjs';
   styleUrls: ['./simple-modal-content.component.scss']
 })
 export class SimpleModalContentComponent implements OnInit {
-  
   @Input() employee: Employee = new Employee();
   public lastId: number = 0;
 
   employeeForm: FormGroup;
-  
+
   title: string = 'Add New Employee';
   closeBtnName: string = 'Close';
   saveBtnName: string = 'Save';
   action: any = Action.New;
-  loading: boolean = false;
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -35,13 +33,13 @@ export class SimpleModalContentComponent implements OnInit {
       age: '',
       gender: '',
       company: ['', Validators.required]
-    })
+    });
   }
- 
-  ngOnInit() { 
+
+  ngOnInit() {
     console.log(this.employee);
     console.log(this.lastId);
-    if(this.action == Action.Update || this.action == Action.Copy){
+    if (this.action == Action.Update || this.action == Action.Copy) {
       this.employeeForm.setValue({
         id: this.employee.id,
         name: this.employee.name,
@@ -53,56 +51,48 @@ export class SimpleModalContentComponent implements OnInit {
     // this.employeeForm.reset();
   }
 
-  saveEmployee(employee: Employee, isValid: boolean){
-    this.loading = true;
-    if(isValid){
-      switch (this.action) {
-        case Action.New:
-          this.employee.id = employee.id = this.lastId + 1;
-          this.employeeService.addEmployee(employee)
-            .subscribe(
-              (res) => {
-                this.bsModalService.onHide.next(employee);
-                this.loading = false;
-                this.bsModalRef.hide();
-                console.log('New record created');
-              }
-            );
-          break;
-        case Action.Update:
-          this.employeeService.updateEmployee(employee)
-            .subscribe(
-              (res) => {
-                this.bsModalService.onHide.next(employee);
-                this.loading = false;
-                this.bsModalRef.hide();
-                
-                console.log('record updated');
-              }
-            );
-          console.log('Record updated');
-          break;
-        case Action.Copy:
-          employee.id = this.lastId + 1;
-          console.log(employee);
-          this.employeeService.addEmployee(employee)
-            .subscribe(
-              (res) => {
-                this.bsModalService.onHide.next(employee);
-                this.loading = false;
-                this.bsModalRef.hide();
-                console.log('New record created');
-              }
-            );
-          break;
-        
-        default:
-          console.log('default case');
-          break;
-      }
+  saveEmployee(employee: Employee, isValid: boolean) {
+    if (isValid) {
+      const res = {
+        action: this.action,
+        employee: employee
+      };
+      this.bsModalService.onHide.next(employee);
+      this.bsModalRef.hide();
+      // switch (this.action) {
+      //   case Action.New:
+      //     this.employee.id = employee.id = this.lastId + 1;
+      //     this.employeeService.addEmployee(employee).subscribe(res => {
+      //       this.bsModalService.onHide.next(employee);
+      //       this.bsModalRef.hide();
+      //       console.log('New record created');
+      //     });
+      //     break;
+      //   case Action.Update:
+      //     this.employeeService.updateEmployee(employee).subscribe(res => {
+      //       this.bsModalService.onHide.next(employee);
+      //       this.bsModalRef.hide();
+
+      //       console.log('record updated');
+      //     });
+      //     console.log('Record updated');
+      //     break;
+      //   case Action.Copy:
+      //     employee.id = this.lastId + 1;
+      //     console.log(employee);
+      //     this.employeeService.addEmployee(employee).subscribe(res => {
+      //       this.bsModalService.onHide.next(employee);
+      //       this.bsModalRef.hide();
+      //       console.log('New record created');
+      //     });
+      //     break;
+
+      //   default:
+      //     console.log('default case');
+      //     break;
+      // }
 
       // this.employeeForm.reset();
     }
   }
-
 }
