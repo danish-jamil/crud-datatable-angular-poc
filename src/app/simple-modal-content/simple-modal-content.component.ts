@@ -48,51 +48,12 @@ export class SimpleModalContentComponent implements OnInit {
         company: this.employee.company
       });
     }
-    // this.employeeForm.reset();
   }
 
   saveEmployee(employee: Employee, isValid: boolean) {
     if (isValid) {
-      const res = {
-        action: this.action,
-        employee: employee
-      };
       this.bsModalService.onHide.next(employee);
       this.bsModalRef.hide();
-      // switch (this.action) {
-      //   case Action.New:
-      //     this.employee.id = employee.id = this.lastId + 1;
-      //     this.employeeService.addEmployee(employee).subscribe(res => {
-      //       this.bsModalService.onHide.next(employee);
-      //       this.bsModalRef.hide();
-      //       console.log('New record created');
-      //     });
-      //     break;
-      //   case Action.Update:
-      //     this.employeeService.updateEmployee(employee).subscribe(res => {
-      //       this.bsModalService.onHide.next(employee);
-      //       this.bsModalRef.hide();
-
-      //       console.log('record updated');
-      //     });
-      //     console.log('Record updated');
-      //     break;
-      //   case Action.Copy:
-      //     employee.id = this.lastId + 1;
-      //     console.log(employee);
-      //     this.employeeService.addEmployee(employee).subscribe(res => {
-      //       this.bsModalService.onHide.next(employee);
-      //       this.bsModalRef.hide();
-      //       console.log('New record created');
-      //     });
-      //     break;
-
-      //   default:
-      //     console.log('default case');
-      //     break;
-      // }
-
-      // this.employeeForm.reset();
     }
   }
 }
