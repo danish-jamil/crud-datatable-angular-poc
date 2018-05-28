@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -12,14 +13,37 @@ import { LoadingModule } from 'ngx-loading';
 import { AppComponent } from './app.component';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
 import { EmployeeService } from './shared/services/employee.service';
-import { InMemoryDataService }  from './in-memory-data-service';
+import { InMemoryDataService } from './in-memory-data-service';
 import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
+import { CrudComponent } from './crud/crud.component';
+import { FormUnsavedCheckComponent } from './form-unsaved-check/form-unsaved-check.component';
+import { PendingChangesGuard } from './guards/pending-changes.guard';
+import { AlertComponent } from './alert/alert.component';
 
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: CrudComponent
+  },
+  {
+    path: 'form-check',
+    component: FormUnsavedCheckComponent,
+    canDeactivate: [PendingChangesGuard]
+  }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
-    SimpleModalContentComponent
+    SimpleModalContentComponent,
+    CrudComponent,
+    FormUnsavedCheckComponent,
+    AlertComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -33,18 +57,21 @@ import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
     // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
     // and returns simulated server responses.
     // Remove it when a real server is ready to receive requests.
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { delay: 1500 }
-    )
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
+      delay: 1500
+    }),
+    RouterModule.forRoot(routes)
   ],
   providers: [
-    EmployeeService, {
-      provide: HTTP_INTERCEPTORS, 
-      useClass: AuthInterceptor, 
+    EmployeeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    PendingChangesGuard
   ],
   bootstrap: [AppComponent],
-  entryComponents: [SimpleModalContentComponent]
+  entryComponents: [SimpleModalContentComponent, AlertComponent]
 })
-export class AppModule { }
+export class AppModule {}
