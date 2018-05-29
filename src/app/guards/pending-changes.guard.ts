@@ -3,9 +3,13 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  CanDeactivate
+  CanDeactivate,
+  RouterState,
+  Router
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators/take';
+import { first } from 'rxjs/operators/first';
 import { ComponentCanDeactivate } from '../classes/component-can-deactivate';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AlertComponent } from '../alert/alert.component';
@@ -14,8 +18,8 @@ import { AlertComponent } from '../alert/alert.component';
 export class PendingChangesGuard
   implements CanDeactivate<ComponentCanDeactivate> {
   bsModalRef: BsModalRef;
-
-  constructor(private modalService: BsModalService) {}
+  decision: boolean;
+  constructor(private bsModalService: BsModalService, private router: Router) {}
 
   canDeactivate(
     component: ComponentCanDeactivate,
@@ -25,19 +29,23 @@ export class PendingChangesGuard
   ): Observable<boolean> | Promise<boolean> | boolean {
     if (!component.canDeactivate()) {
       const initialState = {
-        list: [
-          'Open a modal with component',
-          'Pass your data',
-          'Do something else',
-          '...'
-        ],
-        title: 'Modal with component'
+        title: 'Alert!',
+        message: 'You have unsaved changes. Are you sure you want to navigate?'
       };
-      this.bsModalRef = this.modalService.show(AlertComponent, {
+      this.bsModalRef = this.bsModalService.show(AlertComponent, {
         initialState
       });
       this.bsModalRef.content.closeBtnName = 'Close';
+      this.bsModalService.onHide.pipe(take(1)).subscribe(decision => {
+        console.log(decision);
+        console.log(nextState.url);
+        this.decision = decision;
+        decision ? this.router.navigate([nextState.url]) : '';
+        this.bsModalRef.hide();
+      });
+      return this.decision;
+    } else {
+      return true;
     }
-    return false;
   }
 }

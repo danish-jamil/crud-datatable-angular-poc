@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Component, OnInit, Input } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-alert',
@@ -7,13 +7,19 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
-  title: string;
   closeBtnName: string;
-  list: any[] = [];
+  @Input() title: string;
+  @Input() message: string;
 
-  constructor(public bsModalRef: BsModalRef) {}
+  constructor(
+    public bsModalRef: BsModalRef,
+    public bsModalService: BsModalService
+  ) {}
 
-  ngOnInit() {
-    this.list.push('PROFIT!!!');
+  ngOnInit() {}
+
+  close(decision: boolean) {
+    this.bsModalService.onHide.next(decision);
+    this.bsModalRef.hide();
   }
 }

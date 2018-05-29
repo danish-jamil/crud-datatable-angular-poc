@@ -24,7 +24,7 @@
     "@swimlane/ngx-datatable": "^11.3.2",
     "angular-in-memory-web-api": "^0.5.4",
     "core-js": "^2.4.1",
-    "ngx-bootstrap": "^2.0.4",
+    "ngx-bootstrap": "^3.0.0",
     "ngx-loading": "^1.0.14",
     "rxjs": "^5.2.10",
     "zone.js": "^0.8.26"

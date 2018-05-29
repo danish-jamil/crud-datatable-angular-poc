@@ -64,11 +64,11 @@ const routes: Routes = [
   ],
   providers: [
     EmployeeService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true
+    // },
     PendingChangesGuard
   ],
   bootstrap: [AppComponent],
