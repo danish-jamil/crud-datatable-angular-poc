@@ -12,7 +12,7 @@ const httpOptions = {
 
 @Injectable()
 export class PostsService {
-  private apiUrl = 'http://jsonplaceholder.typicode.com/posts'; // URL to web api
+  private apiUrl = 'https://jsonplaceholder.typicode.com/posts'; // URL to web api
 
   constructor(private http: HttpClient) {}
 
