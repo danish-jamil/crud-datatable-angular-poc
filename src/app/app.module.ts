@@ -9,6 +9,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { LoadingModule } from 'ngx-loading';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AppComponent } from './app.component';
 import { SimpleModalContentComponent } from './simple-modal-content/simple-modal-content.component';
@@ -19,6 +20,7 @@ import { CrudComponent } from './crud/crud.component';
 import { FormUnsavedCheckComponent } from './form-unsaved-check/form-unsaved-check.component';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { AlertComponent } from './alert/alert.component';
+import { PostsService } from './services/posts.service';
 
 const routes: Routes = [
   {
@@ -58,18 +60,21 @@ const routes: Routes = [
     // and returns simulated server responses.
     // Remove it when a real server is ready to receive requests.
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
-      delay: 1500
+      delay: 1500,
+      passThruUnknownUrl: true
     }),
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    InfiniteScrollModule
   ],
   providers: [
     EmployeeService,
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    // },
-    PendingChangesGuard
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    PendingChangesGuard,
+    PostsService
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleModalContentComponent, AlertComponent]

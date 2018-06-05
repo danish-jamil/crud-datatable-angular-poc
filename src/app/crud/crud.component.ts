@@ -3,7 +3,8 @@ import {
   ViewChild,
   TemplateRef,
   OnInit,
-  OnDestroy
+  OnDestroy,
+  ElementRef
 } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -14,6 +15,8 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import { Employee, Action } from '../shared/models/employee';
 import { HttpClient } from '@angular/common/http';
 import { catchError, take } from 'rxjs/operators';
+import { PostsService } from '../services/posts.service';
+import { Post } from '../shared/models/post';
 
 @Component({
   selector: 'app-crud',
@@ -30,32 +33,35 @@ export class CrudComponent implements OnInit, OnDestroy {
   // temp employees list
   temp = [];
   loading: boolean = false;
+  isLoading = false;
+  readonly headerHeight = 50;
+  readonly rowHeight = 50;
+  readonly pageLimit = 10;
+  rows: Post[] = [];
   // We will push all modal subscriptions in this list and unsubsribe them on destroy
   modalSubscriptions: Subscription[] = [];
-  // Columns for table component
-  columns = [
-    { name: 'id' },
-    { prop: 'name' },
-    { name: 'Company' },
-    { name: 'Gender' },
-    { name: 'Edit' }
-  ];
+
+  page = 1;
 
   constructor(
     private modalService: BsModalService,
     private employeeService: EmployeeService,
-    private http: HttpClient
+    private postsService: PostsService,
+    private http: HttpClient,
+    private el: ElementRef
   ) {}
 
   ngOnInit() {
     this.loading = true;
     // Fetch employees from API on component init
-    this.employeeService.getEmployees().subscribe(employees => {
-      this.employees = employees;
-      // Add employees to temp array for search filtering
-      this.temp = [...employees];
-      this.loading = false;
-    });
+    // this.postsService.getPosts(1, 5).subscribe(posts => {
+    //   this.rows = [...posts];
+    //   // Add employees to temp array for search filtering
+    //   this.temp = [...posts];
+    //   this.loading = false;
+    // });
+
+    this.onScroll(this.page);
   }
 
   ngOnDestroy() {
@@ -191,5 +197,56 @@ export class CrudComponent implements OnInit, OnDestroy {
       err => {},
       () => (this.loading = false)
     );
+  }
+
+  onScrollold(offsetY) {
+    console.log(offsetY);
+    // total height of all rows in the viewport
+    const viewHeight =
+      this.el.nativeElement.getBoundingClientRect().height - this.headerHeight;
+    console.log(
+      'offset+viewheight >= rows.length * rowHeight',
+      offsetY + viewHeight,
+      this.rows.length * this.rowHeight
+    );
+    // check if we scrolled to the end of the viewport
+    if (
+      !this.isLoading &&
+      offsetY + viewHeight >= this.rows.length * this.rowHeight
+    ) {
+      // check if we haven't fetched any results yet
+      // if (this.rows.length === 0) {
+      //   // calculate the number of rows that fit within viewport
+      //   const pageSize = Math.ceil(viewHeight / this.rowHeight);
+
+      //   // change the limit to pageSize such that we fill the first page entirely
+      //   // (otherwise, we won't be able to scroll past it)
+      //   limit = Math.max(pageSize, this.pageLimit);
+      // }
+      this.loadPage(this.page);
+      this.page++;
+    }
+  }
+
+  onScroll() {
+    this.loadPage(this.page);
+  }
+
+  private loadPage(offset, limit: number = this.pageLimit) {
+    // set the loading flag, which serves two purposes:
+    // 1) it prevents the same page from being loaded twice
+    // 2) it enables display of the loading indicator
+    this.isLoading = true;
+
+    this.postsService.getPosts(offset, limit).subscribe(results => {
+      this.rows = [...this.rows, ...results];
+      console.log(this.rows);
+      this.rows.length > 0 ? this.page++ : '';
+      this.isLoading = false;
+    });
+  }
+
+  paged() {
+    console.log('paged');
   }
 }
