@@ -60,8 +60,7 @@ export class CrudComponent implements OnInit, OnDestroy {
     //   this.temp = [...posts];
     //   this.loading = false;
     // });
-
-    this.onScroll(this.page);
+    this.onScroll();
   }
 
   ngOnDestroy() {
@@ -229,7 +228,9 @@ export class CrudComponent implements OnInit, OnDestroy {
   }
 
   onScroll() {
-    this.loadPage(this.page);
+    if (!this.isLoading) {
+      this.loadPage(this.page);
+    }
   }
 
   private loadPage(offset, limit: number = this.pageLimit) {

@@ -21,6 +21,7 @@ import { FormUnsavedCheckComponent } from './form-unsaved-check/form-unsaved-che
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { AlertComponent } from './alert/alert.component';
 import { PostsService } from './services/posts.service';
+import { UserManagerComponent } from './user-management/user-manager/user-manager.component';
 
 const routes: Routes = [
   {
@@ -45,7 +46,8 @@ const routes: Routes = [
     SimpleModalContentComponent,
     CrudComponent,
     FormUnsavedCheckComponent,
-    AlertComponent
+    AlertComponent,
+    UserManagerComponent
   ],
   imports: [
     NgxDatatableModule,
