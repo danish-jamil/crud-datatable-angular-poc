@@ -22,6 +22,7 @@ import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { AlertComponent } from './alert/alert.component';
 import { PostsService } from './services/posts.service';
 import { UserManagerComponent } from './user-management/user-manager/user-manager.component';
+import { UsersListComponent } from './user-management/user-manager/users-list/users-list.component';
 
 const routes: Routes = [
   {
@@ -47,7 +48,8 @@ const routes: Routes = [
     CrudComponent,
     FormUnsavedCheckComponent,
     AlertComponent,
-    UserManagerComponent
+    UserManagerComponent,
+    UsersListComponent
   ],
   imports: [
     NgxDatatableModule,

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { RestService } from '../../../shared/services/rest.service';
+import { RestService } from '@admin/services/rest.service';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
-import { ErrorHandlerService } from '../../../shared/error-handler/error-handler.service';
-import { Entity } from '../../../shared/models/entity';
+import { ErrorHandlerService } from '@admin/error-handler/error-handler.service';
+import { Entity } from '@admin/models/entity';
 
-import * as _Global from '../../../shared/constants/constants';
+import * as _Global from '@admin/constants/constants';
 
 @Injectable()
-export class CouponService extends RestService<User> {
+export class UsersService extends RestService<User> {
   constructor(
     protected httpClient: HttpClient,
     protected errorHandler: ErrorHandlerService
@@ -21,12 +21,9 @@ export class CouponService extends RestService<User> {
   }
 
   getUri(): string {
-    return (
-      _Global.Constant.asi.smartLinkUrl +
-      '/v1/users/' +
-      _Global.Constant.asi.companyId +
-      '/list'
-    );
+    return `${_Global.Constant.asi.smartLinkUrl}/v1/web_apps/${
+      _Global.Constant.asi.appId
+    }/users`;
   }
 
   getInstance(): Entity {

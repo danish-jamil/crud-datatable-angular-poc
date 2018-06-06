@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from './models/user.model';
+import { UsersService } from './services/users.service';
+import { Entity } from '@admin/models/entity';
 
 @Component({
   selector: 'app-user-manager',
@@ -6,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-manager.component.scss']
 })
 export class UserManagerComponent implements OnInit {
+  users = Array<User>();
 
-  constructor() { }
+  constructor(private usersService: UsersService) {}
 
   ngOnInit() {
+    this.usersService
+      .getAll()
+      .subscribe((users: User[]) => (this.users = users));
   }
-
 }
