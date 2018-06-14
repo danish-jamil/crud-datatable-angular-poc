@@ -21,8 +21,8 @@ import { FormUnsavedCheckComponent } from './form-unsaved-check/form-unsaved-che
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { AlertComponent } from './alert/alert.component';
 import { PostsService } from './services/posts.service';
-import { UserManagerComponent } from './user-management/user-manager/user-manager.component';
-import { UsersListComponent } from './user-management/user-manager/users-list/users-list.component';
+import { ErrorHandlerService } from '@admin/error-handler/error-handler.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 const routes: Routes = [
   {
@@ -47,9 +47,7 @@ const routes: Routes = [
     SimpleModalContentComponent,
     CrudComponent,
     FormUnsavedCheckComponent,
-    AlertComponent,
-    UserManagerComponent,
-    UsersListComponent
+    AlertComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -68,7 +66,8 @@ const routes: Routes = [
       passThruUnknownUrl: true
     }),
     RouterModule.forRoot(routes),
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    LoggerModule.forRoot({ level: NgxLoggerLevel.DEBUG })
   ],
   providers: [
     EmployeeService,
@@ -78,7 +77,8 @@ const routes: Routes = [
       multi: true
     },
     PendingChangesGuard,
-    PostsService
+    PostsService,
+    ErrorHandlerService
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleModalContentComponent, AlertComponent]

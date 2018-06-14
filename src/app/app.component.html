@@ -1,4 +1,20 @@
-<a [routerLink]="['home']">Home</a>
-<a [routerLink]="['form-check']">Form</a>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active">
+        <a [routerLink]="['home']">Home</a>
+      </li>
+      <li>
+        <a [routerLink]="['form-check']">Form Check</a>
+      </li>
+      <li>
+        <a [routerLink]="['users']">Users</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <router-outlet></router-outlet>
