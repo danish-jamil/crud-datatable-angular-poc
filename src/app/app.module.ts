@@ -20,8 +20,6 @@ import { CrudComponent } from './crud/crud.component';
 import { FormUnsavedCheckComponent } from './form-unsaved-check/form-unsaved-check.component';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 import { AlertComponent } from './alert/alert.component';
-import { PostsService } from './services/posts.service';
-import { ErrorHandlerService } from '@admin/error-handler/error-handler.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 const routes: Routes = [
@@ -76,9 +74,7 @@ const routes: Routes = [
       useClass: AuthInterceptor,
       multi: true
     },
-    PendingChangesGuard,
-    PostsService,
-    ErrorHandlerService
+    PendingChangesGuard
   ],
   bootstrap: [AppComponent],
   entryComponents: [SimpleModalContentComponent, AlertComponent]
