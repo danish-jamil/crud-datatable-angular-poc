@@ -15,8 +15,6 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import { Employee, Action } from '../shared/models/employee';
 import { HttpClient } from '@angular/common/http';
 import { catchError, take } from 'rxjs/operators';
-import { PostsService } from '../services/posts.service';
-import { Post } from '../shared/models/post';
 
 @Component({
   selector: 'app-crud',
@@ -28,6 +26,7 @@ export class CrudComponent implements OnInit, OnDestroy {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   title = 'app';
   // Employees list: table rows
+  rows: Employee[];
   employees: Employee[];
   bsModalRef: BsModalRef;
   // temp employees list
@@ -37,7 +36,6 @@ export class CrudComponent implements OnInit, OnDestroy {
   readonly headerHeight = 50;
   readonly rowHeight = 50;
   readonly pageLimit = 10;
-  rows: Post[] = [];
   // We will push all modal subscriptions in this list and unsubsribe them on destroy
   modalSubscriptions: Subscription[] = [];
 
@@ -46,7 +44,6 @@ export class CrudComponent implements OnInit, OnDestroy {
   constructor(
     private modalService: BsModalService,
     private employeeService: EmployeeService,
-    private postsService: PostsService,
     private http: HttpClient,
     private el: ElementRef
   ) {}
@@ -54,10 +51,16 @@ export class CrudComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = true;
     // Fetch employees from API on component init
-    this.postsService.getPosts(1, 5).subscribe(posts => {
-      this.rows = [...posts];
+    // this.postsService.getPosts(1, 5).subscribe(posts => {
+    //   this.rows = [...posts];
+    //   // Add employees to temp array for search filtering
+    //   this.temp = [...posts];
+    //   this.loading = false;
+    // });
+    this.employeeService.getEmployees().subscribe((employees: Employee[]) => {
+      this.rows = [...employees];
       // Add employees to temp array for search filtering
-      this.temp = [...posts];
+      this.temp = [...employees];
       this.loading = false;
     });
     // this.onScroll();
@@ -238,13 +241,6 @@ export class CrudComponent implements OnInit, OnDestroy {
     // 1) it prevents the same page from being loaded twice
     // 2) it enables display of the loading indicator
     this.isLoading = true;
-
-    this.postsService.getPosts(offset, limit).subscribe(results => {
-      this.rows = [...this.rows, ...results];
-      console.log(this.rows);
-      this.rows.length > 0 ? this.page++ : '';
-      this.isLoading = false;
-    });
   }
 
   paged() {
