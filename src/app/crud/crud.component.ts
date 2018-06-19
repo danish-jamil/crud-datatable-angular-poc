@@ -53,14 +53,14 @@ export class CrudComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
-    // Fetch employees from API on component init
-    // this.postsService.getPosts(1, 5).subscribe(posts => {
-    //   this.rows = [...posts];
-    //   // Add employees to temp array for search filtering
-    //   this.temp = [...posts];
-    //   this.loading = false;
-    // });
-    this.onScroll();
+    Fetch employees from API on component init
+    this.postsService.getPosts(1, 5).subscribe(posts => {
+      this.rows = [...posts];
+      // Add employees to temp array for search filtering
+      this.temp = [...posts];
+      this.loading = false;
+    });
+    // this.onScroll();
   }
 
   ngOnDestroy() {

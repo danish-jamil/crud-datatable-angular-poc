@@ -1,6 +1,6 @@
 <!-- <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading> -->
 
-<div class="container" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
+<div class="container">
   <div class="row">
     <div class="col-xs-12">
       <div>
@@ -38,7 +38,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <!-- <ngx-datatable #table [rows]="rows" [columns]="columns" class="bootstrap" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+      <ngx-datatable #table [rows]="rows" [columns]="columns" class="bootstrap" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
         [selectionType]="'checkbox'" (select)='onSelect($event)' [sorts]="[{prop: 'id', dir: 'desc'}]" [headerHeight]="headerHeight"
         [rowHeight]="rowHeight" [loadingIndicator]="isLoading" [scrollbarV]="true" (scroll)="onScroll($event.offsetY)">
 
@@ -81,13 +81,13 @@
             </div>
           </ng-template>
         </ngx-datatable-column>
-      </ngx-datatable> -->
-      <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="40" [rowHeight]="50" [loadingIndicator]="isLoading"
+      </ngx-datatable>
+      <!-- <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="40" [rowHeight]="50" [loadingIndicator]="isLoading"
         #table>
         <ngx-datatable-column name="Id" prop="id"></ngx-datatable-column>
         <ngx-datatable-column name="Title" prop="title"></ngx-datatable-column>
         <ngx-datatable-column name="Body" prop="body"></ngx-datatable-column>
-      </ngx-datatable>
+      </ngx-datatable> -->
     </div>
   </div>
 
